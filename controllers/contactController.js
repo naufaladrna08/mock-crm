@@ -125,14 +125,14 @@ exports.listContacts = (req, res) => {
         email: 'andi.pratama@gmail.com',
         account_name: 'PT Teknologi Nusantara',
         owner_name: 'Budi Santoso',
-        last_activite: '2026-02-08T14:21:00Z'
+        last_activity: '2026-02-08T14:21:00Z'
       },
       {
         name: 'Siti Aisyah',
         email: 'siti.aisyah@gmail.com',
         account_name: 'CV Digital Solusi',
         owner_name: 'Budi Santoso',
-        last_activite: '2026-02-07T09:10:32Z'
+        last_activity: '2026-02-07T09:10:32Z'
       },
       // Add more mock data as needed
     ];
