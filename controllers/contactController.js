@@ -121,6 +121,7 @@ exports.listContacts = (req, res) => {
     // Mock data (replace with database query)
     const mockContacts = [
       {
+        id: 1,
         name: 'Andi Pratama',
         email: 'andi.pratama@gmail.com',
         account_name: 'PT Teknologi Nusantara',
@@ -128,6 +129,7 @@ exports.listContacts = (req, res) => {
         last_activity: '2026-02-08T14:21:00Z'
       },
       {
+        id: 2,
         name: 'Siti Aisyah',
         email: 'siti.aisyah@gmail.com',
         account_name: 'CV Digital Solusi',
