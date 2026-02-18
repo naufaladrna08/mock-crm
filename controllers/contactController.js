@@ -244,6 +244,7 @@ exports.listContacts = (req, res) => {
     
     // Format contacts for list view
     const formattedContacts = contacts.map(contact => ({
+      id: contact.id,
       name: `${contact.first_name} ${contact.last_name || ''}`.trim(),
       email: contact.email,
       account_name: contact.professional_info?.account?.name || 'No Account',
