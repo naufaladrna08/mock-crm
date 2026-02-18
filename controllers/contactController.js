@@ -255,6 +255,7 @@ exports.listContacts = (req, res) => {
     if (formattedContacts.length === 0) {
       const mockContacts = [
         {
+          id: 45,
           name: 'Andi Pratama',
           email: 'andi.pratama@gmail.com',
           account_name: 'PT Teknologi Nusantara',
@@ -262,6 +263,7 @@ exports.listContacts = (req, res) => {
           last_activite: '2026-02-08T14:21:00Z'
         },
         {
+          id: 46,
           name: 'Siti Aisyah',
           email: 'siti.aisyah@gmail.com',
           account_name: 'CV Digital Solusi',
