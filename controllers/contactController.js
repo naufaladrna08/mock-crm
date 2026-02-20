@@ -751,3 +751,900 @@ exports.updateContact = (req, res) => {
     });
   }
 };
+
+// 7. Get Contact Calls
+exports.getContactCalls = (req, res) => {
+  try {
+    const { contact_id } = req.params;
+    const {
+      page = 1,
+      limit = 20
+    } = req.query;
+    
+    const contactId = parseInt(contact_id);
+    const pageNum = parseInt(page);
+    const limitNum = parseInt(limit);
+    
+    if (pageNum < 1 || limitNum < 1) {
+      return res.status(400).json({
+        error: true,
+        code: 400,
+        message: 'Invalid pagination parameters'
+      });
+    }
+    
+    // Find contact
+    const contact = contacts.find(c => c.id === contactId);
+    
+    if (!contact) {
+      return res.status(404).json({
+        error: true,
+        code: 404,
+        message: 'Contact not found'
+      });
+    }
+    
+    // Mock calls data for contact 45
+    let calls = [];
+    
+    if (contactId === 45) {
+      calls = [
+        {
+          id: 1,
+          title: "Introductory call",
+          description: "Initial discussion about requirements",
+          duration: 15,
+          handled_by_name: "Panjul",
+          status: "connected",
+          created_at: "2026-02-10T10:15:30Z"
+        },
+        {
+          id: 2,
+          title: "Follow-up call",
+          description: "Client did not answer",
+          duration: 0,
+          handled_by_name: "Panjul",
+          status: "missed",
+          created_at: "2026-02-11T09:30:00Z"
+        },
+        {
+          id: 3,
+          title: "Contract negotiation call",
+          description: "Discussed pricing and terms",
+          duration: 25,
+          handled_by_name: "Budi Santoso",
+          status: "connected",
+          created_at: "2026-02-09T14:00:00Z"
+        }
+      ];
+    } else {
+      // Generate dynamic calls for other contacts
+      calls = generateMockCalls(contactId);
+    }
+    
+    // Sort calls by created_at (newest first)
+    calls.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    
+    // Paginate
+    const startIndex = (pageNum - 1) * limitNum;
+    const endIndex = pageNum * limitNum;
+    const paginatedCalls = calls.slice(startIndex, endIndex);
+    
+    const pagination = {
+      page: pageNum,
+      limit: limitNum,
+      total: calls.length,
+      totalPages: Math.ceil(calls.length / limitNum),
+      hasNext: endIndex < calls.length,
+      hasPrev: startIndex > 0
+    };
+    
+    res.status(200).json({
+      error: false,
+      code: 200,
+      message: 'Success',
+      data: {
+        items: paginatedCalls,
+        pagination
+      }
+    });
+    
+  } catch (error) {
+    console.error('Error getting contact calls:', error);
+    res.status(500).json({
+      error: true,
+      code: 500,
+      message: 'Internal server error'
+    });
+  }
+};
+
+// 8. Get Contact Emails
+exports.getContactEmails = (req, res) => {
+  try {
+    const { contact_id } = req.params;
+    const {
+      page = 1,
+      limit = 20
+    } = req.query;
+    
+    const contactId = parseInt(contact_id);
+    const pageNum = parseInt(page);
+    const limitNum = parseInt(limit);
+    
+    if (pageNum < 1 || limitNum < 1) {
+      return res.status(400).json({
+        error: true,
+        code: 400,
+        message: 'Invalid pagination parameters'
+      });
+    }
+    
+    // Find contact
+    const contact = contacts.find(c => c.id === contactId);
+    
+    if (!contact) {
+      return res.status(404).json({
+        error: true,
+        code: 404,
+        message: 'Contact not found'
+      });
+    }
+    
+    // Mock emails data for contact 45
+    let emails = [];
+    
+    if (contactId === 45) {
+      emails = [
+        {
+          id: 1,
+          title: "Proposal Follow-up",
+          description: "Sending proposal document to client",
+          to: "client@company.com",
+          created_by_name: "Panjul",
+          status: "sent",
+          attachment_file_url: "https://cdn.example.com/files/proposal.pdf",
+          created_at: "2026-02-10T10:15:30Z"
+        },
+        {
+          id: 2,
+          title: "Draft email",
+          description: "Draft before sending",
+          to: "client@company.com",
+          created_by_name: "Panjul",
+          status: "draft",
+          attachment_file_url: null,
+          created_at: "2026-02-11T09:00:00Z"
+        },
+        {
+          id: 3,
+          title: "Meeting Confirmation",
+          description: "Confirming meeting schedule",
+          to: "client@company.com",
+          created_by_name: "Siti Rahma",
+          status: "sent",
+          attachment_file_url: "https://cdn.example.com/files/meeting.ics",
+          created_at: "2026-02-08T11:30:00Z"
+        }
+      ];
+    } else {
+      // Generate dynamic emails for other contacts
+      emails = generateMockEmails(contactId);
+    }
+    
+    // Sort emails by created_at (newest first)
+    emails.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    
+    // Paginate
+    const startIndex = (pageNum - 1) * limitNum;
+    const endIndex = pageNum * limitNum;
+    const paginatedEmails = emails.slice(startIndex, endIndex);
+    
+    const pagination = {
+      page: pageNum,
+      limit: limitNum,
+      total: emails.length,
+      totalPages: Math.ceil(emails.length / limitNum),
+      hasNext: endIndex < emails.length,
+      hasPrev: startIndex > 0
+    };
+    
+    res.status(200).json({
+      error: false,
+      code: 200,
+      message: 'Success',
+      data: {
+        items: paginatedEmails,
+        pagination
+      }
+    });
+    
+  } catch (error) {
+    console.error('Error getting contact emails:', error);
+    res.status(500).json({
+      error: true,
+      code: 500,
+      message: 'Internal server error'
+    });
+  }
+};
+
+// 9. Get Contact Meetings
+exports.getContactMeetings = (req, res) => {
+  try {
+    const { contact_id } = req.params;
+    const {
+      page = 1,
+      limit = 20
+    } = req.query;
+    
+    const contactId = parseInt(contact_id);
+    const pageNum = parseInt(page);
+    const limitNum = parseInt(limit);
+    
+    if (pageNum < 1 || limitNum < 1) {
+      return res.status(400).json({
+        error: true,
+        code: 400,
+        message: 'Invalid pagination parameters'
+      });
+    }
+    
+    // Find contact
+    const contact = contacts.find(c => c.id === contactId);
+    
+    if (!contact) {
+      return res.status(404).json({
+        error: true,
+        code: 404,
+        message: 'Contact not found'
+      });
+    }
+    
+    // Mock meetings data for contact 45
+    let meetings = [];
+    
+    if (contactId === 45) {
+      meetings = [
+        {
+          id: 1,
+          title: "Project Kickoff Meeting",
+          description: "Initial discussion with stakeholders",
+          schedule_date: "2026-02-15",
+          schedule_time: "10:00 - 11:00",
+          guest: [
+            "Budi Santoso",
+            "Panjul",
+            "Siti"
+          ],
+          attachment_file_url: "https://cdn.example.com/files/kickoff-agenda.pdf",
+          created_by_name: "Panjul",
+          status: "upcoming",
+          created_at: "2026-02-10T10:15:30Z"
+        },
+        {
+          id: 2,
+          title: "Review Meeting",
+          description: "Sprint review session",
+          schedule_date: "2026-02-10",
+          schedule_time: "14:00 - 15:00",
+          guest: [
+            "Budi Santoso"
+          ],
+          attachment_file_url: null,
+          created_by_name: "Panjul",
+          status: "completed",
+          created_at: "2026-02-09T09:00:00Z"
+        },
+        {
+          id: 3,
+          title: "Planning Session",
+          description: "Q2 planning meeting",
+          schedule_date: "2026-02-18",
+          schedule_time: "13:00 - 15:00",
+          guest: [
+            "Budi Santoso",
+            "Siti Rahma",
+            "Panjul",
+            "Eka"
+          ],
+          attachment_file_url: "https://cdn.example.com/files/planning-doc.pdf",
+          created_by_name: "Budi Santoso",
+          status: "upcoming",
+          created_at: "2026-02-12T16:00:00Z"
+        }
+      ];
+    } else {
+      // Generate dynamic meetings for other contacts
+      meetings = generateMockMeetings(contactId);
+    }
+    
+    // Sort meetings by schedule_date (closest first)
+    meetings.sort((a, b) => {
+      if (a.status === 'upcoming' && b.status === 'upcoming') {
+        return new Date(a.schedule_date) - new Date(b.schedule_date);
+      }
+      return new Date(b.created_at) - new Date(a.created_at);
+    });
+    
+    // Paginate
+    const startIndex = (pageNum - 1) * limitNum;
+    const endIndex = pageNum * limitNum;
+    const paginatedMeetings = meetings.slice(startIndex, endIndex);
+    
+    const pagination = {
+      page: pageNum,
+      limit: limitNum,
+      total: meetings.length,
+      totalPages: Math.ceil(meetings.length / limitNum),
+      hasNext: endIndex < meetings.length,
+      hasPrev: startIndex > 0
+    };
+    
+    res.status(200).json({
+      error: false,
+      code: 200,
+      message: 'Success',
+      data: {
+        items: paginatedMeetings,
+        pagination
+      }
+    });
+    
+  } catch (error) {
+    console.error('Error getting contact meetings:', error);
+    res.status(500).json({
+      error: true,
+      code: 500,
+      message: 'Internal server error'
+    });
+  }
+};
+
+// Helper function to generate mock calls
+function generateMockCalls(contactId) {
+  const callTitles = [
+    'Introductory call',
+    'Follow-up call',
+    'Discovery call',
+    'Demo call',
+    'Technical discussion',
+    'Pricing negotiation',
+    'Support call',
+    'Onboarding call'
+  ];
+  
+  const statuses = ['connected', 'missed', 'voicemail', 'scheduled', 'completed'];
+  const handlers = ['Panjul', 'Budi Santoso', 'Siti Rahma', 'Eka Prasetya'];
+  
+  const calls = [];
+  const now = new Date();
+  
+  // Generate 2-8 random calls
+  const numCalls = Math.floor(Math.random() * 7) + 2;
+  
+  for (let i = 1; i <= numCalls; i++) {
+    const createdDate = new Date(now);
+    createdDate.setDate(createdDate.getDate() - Math.floor(Math.random() * 30));
+    
+    const status = statuses[Math.floor(Math.random() * statuses.length)];
+    const duration = status === 'missed' ? 0 : Math.floor(Math.random() * 45) + 5;
+    
+    const call = {
+      id: i + (contactId * 100),
+      title: callTitles[Math.floor(Math.random() * callTitles.length)],
+      description: `Sample call description for contact ${contactId}`,
+      duration,
+      handled_by_name: handlers[Math.floor(Math.random() * handlers.length)],
+      status,
+      created_at: createdDate.toISOString()
+    };
+    
+    calls.push(call);
+  }
+  
+  return calls;
+}
+
+// Helper function to generate mock emails
+function generateMockEmails(contactId) {
+  const emailTitles = [
+    'Proposal',
+    'Follow-up',
+    'Meeting notes',
+    'Contract',
+    'Invoice',
+    'Welcome email',
+    'Newsletter',
+    'Product update'
+  ];
+  
+  const statuses = ['sent', 'draft', 'opened', 'clicked', 'bounced', 'scheduled'];
+  const senders = ['Panjul', 'Budi Santoso', 'Siti Rahma', 'Eka Prasetya'];
+  
+  const emails = [];
+  const now = new Date();
+  
+  // Generate 2-8 random emails
+  const numEmails = Math.floor(Math.random() * 7) + 2;
+  
+  for (let i = 1; i <= numEmails; i++) {
+    const createdDate = new Date(now);
+    createdDate.setDate(createdDate.getDate() - Math.floor(Math.random() * 30));
+    
+    const hasAttachment = Math.random() > 0.5;
+    
+    const email = {
+      id: i + (contactId * 100),
+      title: emailTitles[Math.floor(Math.random() * emailTitles.length)],
+      description: `Sample email content for contact ${contactId}`,
+      to: `client${Math.floor(Math.random() * 10)}@company.com`,
+      created_by_name: senders[Math.floor(Math.random() * senders.length)],
+      status: statuses[Math.floor(Math.random() * statuses.length)],
+      attachment_file_url: hasAttachment ? `https://cdn.example.com/files/doc${i}.pdf` : null,
+      created_at: createdDate.toISOString()
+    };
+    
+    emails.push(email);
+  }
+  
+  return emails;
+}
+
+// Helper function to generate mock meetings
+function generateMockMeetings(contactId) {
+  const meetingTitles = [
+    'Kickoff meeting',
+    'Review meeting',
+    'Planning session',
+    'Demo day',
+    'Workshop',
+    'Strategy meeting',
+    'QBR',
+    'Training session'
+  ];
+  
+  const statuses = ['upcoming', 'completed', 'cancelled', 'rescheduled'];
+  const organizers = ['Panjul', 'Budi Santoso', 'Siti Rahma', 'Eka Prasetya'];
+  const guests = ['Budi Santoso', 'Siti Rahma', 'Panjul', 'Eka Prasetya', 'Dian', 'Rina'];
+  
+  const meetings = [];
+  const now = new Date();
+  
+  // Generate 2-6 random meetings
+  const numMeetings = Math.floor(Math.random() * 5) + 2;
+  
+  for (let i = 1; i <= numMeetings; i++) {
+    const createdDate = new Date(now);
+    createdDate.setDate(createdDate.getDate() - Math.floor(Math.random() * 30));
+    
+    const scheduleDate = new Date(now);
+    scheduleDate.setDate(scheduleDate.getDate() + Math.floor(Math.random() * 20) - 10);
+    
+    const startHour = Math.floor(Math.random() * 8) + 9;
+    const endHour = startHour + Math.floor(Math.random() * 2) + 1;
+    
+    const numGuests = Math.floor(Math.random() * 4) + 1;
+    const selectedGuests = [];
+    for (let j = 0; j < numGuests; j++) {
+      const guest = guests[Math.floor(Math.random() * guests.length)];
+      if (!selectedGuests.includes(guest)) {
+        selectedGuests.push(guest);
+      }
+    }
+    
+    const hasAttachment = Math.random() > 0.5;
+    
+    const meeting = {
+      id: i + (contactId * 100),
+      title: meetingTitles[Math.floor(Math.random() * meetingTitles.length)],
+      description: `Sample meeting description for contact ${contactId}`,
+      schedule_date: scheduleDate.toISOString().split('T')[0],
+      schedule_time: `${startHour.toString().padStart(2, '0')}:00 - ${endHour.toString().padStart(2, '0')}:00`,
+      guest: selectedGuests,
+      attachment_file_url: hasAttachment ? `https://cdn.example.com/files/meeting-${i}.pdf` : null,
+      created_by_name: organizers[Math.floor(Math.random() * organizers.length)],
+      status: statuses[Math.floor(Math.random() * statuses.length)],
+      created_at: createdDate.toISOString()
+    };
+    
+    meetings.push(meeting);
+  }
+  
+  return meetings;
+}
+
+// 6. Get Contact Tasks
+exports.getContactTasks = (req, res) => {
+  try {
+    const { contact_id } = req.params;
+    const {
+      page = 1,
+      limit = 20
+    } = req.query;
+    
+    const contactId = parseInt(contact_id);
+    const pageNum = parseInt(page);
+    const limitNum = parseInt(limit);
+    
+    if (pageNum < 1 || limitNum < 1) {
+      return res.status(400).json({
+        error: true,
+        code: 400,
+        message: 'Invalid pagination parameters'
+      });
+    }
+    
+    // Find contact
+    const contact = contacts.find(c => c.id === contactId);
+    
+    if (!contact) {
+      return res.status(404).json({
+        error: true,
+        code: 404,
+        message: 'Contact not found'
+      });
+    }
+    
+    // Mock tasks data for contact 45
+    let tasks = [];
+    
+    if (contactId === 45) {
+      tasks = [
+        {
+          id: 1,
+          title: "Send proposal",
+          description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod",
+          due_date: "2026-02-12",
+          created_at: "2026-02-10T10:15:30Z",
+          status: "upcoming",
+          priority: "high",
+          assigned_to_name: "Panjul"
+        },
+        {
+          id: 2,
+          title: "Send proposal2",
+          description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod",
+          due_date: "2026-02-12",
+          created_at: "2026-02-10T10:15:30Z",
+          status: "done",
+          priority: "high",
+          assigned_to_name: "Panjul"
+        },
+        {
+          id: 3,
+          title: "Send proposal3",
+          description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod",
+          due_date: "2026-02-12",
+          created_at: "2026-02-10T10:15:30Z",
+          status: "overdue",
+          priority: "medium",
+          assigned_to_name: "Panjul"
+        },
+        {
+          id: 4,
+          title: "Send proposal4",
+          description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod",
+          due_date: "2026-02-12",
+          created_at: "2026-02-10T10:15:30Z",
+          status: "in_progress",
+          priority: "low",
+          assigned_to_name: "Panjul"
+        }
+      ];
+    } else {
+      // Generate dynamic tasks for other contacts
+      tasks = generateMockTasks(contactId);
+    }
+    
+    // Sort tasks by due_date (closest first) or created_at
+    tasks.sort((a, b) => {
+      if (a.due_date && b.due_date) {
+        return new Date(a.due_date) - new Date(b.due_date);
+      }
+      return new Date(b.created_at) - new Date(a.created_at);
+    });
+    
+    // Paginate
+    const startIndex = (pageNum - 1) * limitNum;
+    const endIndex = pageNum * limitNum;
+    const paginatedTasks = tasks.slice(startIndex, endIndex);
+    
+    const pagination = {
+      page: pageNum,
+      limit: limitNum,
+      total: tasks.length,
+      totalPages: Math.ceil(tasks.length / limitNum),
+      hasNext: endIndex < tasks.length,
+      hasPrev: startIndex > 0
+    };
+    
+    res.status(200).json({
+      error: false,
+      code: 200,
+      message: 'Success',
+      data: {
+        items: paginatedTasks,
+        pagination
+      }
+    });
+    
+  } catch (error) {
+    console.error('Error getting contact tasks:', error);
+    res.status(500).json({
+      error: true,
+      code: 500,
+      message: 'Internal server error'
+    });
+  }
+};
+
+// Helper function to generate mock tasks for testing
+function generateMockTasks(contactId) {
+  const statuses = ['upcoming', 'in_progress', 'done', 'overdue', 'cancelled'];
+  const priorities = ['low', 'medium', 'high', 'urgent'];
+  const taskTitles = [
+    'Follow up email',
+    'Schedule meeting',
+    'Send contract',
+    'Review proposal',
+    'Update CRM',
+    'Make phone call',
+    'Prepare presentation',
+    'Send invoice',
+    'Collect feedback',
+    'Research client'
+  ];
+  
+  const tasks = [];
+  const now = new Date();
+  
+  // Generate 3-12 random tasks
+  const numTasks = Math.floor(Math.random() * 10) + 3;
+  
+  for (let i = 1; i <= numTasks; i++) {
+    // Random due date within -10 to +30 days from now
+    const dueDate = new Date(now);
+    dueDate.setDate(dueDate.getDate() + Math.floor(Math.random() * 40) - 10);
+    
+    // Random created date within last 30 days
+    const createdDate = new Date(now);
+    createdDate.setDate(createdDate.getDate() - Math.floor(Math.random() * 30));
+    
+    const task = {
+      id: i + (contactId * 100),
+      title: taskTitles[Math.floor(Math.random() * taskTitles.length)],
+      description: `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.`,
+      due_date: dueDate.toISOString().split('T')[0],
+      created_at: createdDate.toISOString(),
+      status: statuses[Math.floor(Math.random() * statuses.length)],
+      priority: priorities[Math.floor(Math.random() * priorities.length)],
+      assigned_to_name: ['Panjul', 'Budi Santoso', 'Siti Rahma'][Math.floor(Math.random() * 3)]
+    };
+    
+    tasks.push(task);
+  }
+  
+  return tasks;
+}
+
+// 11. Get Contact Activities
+exports.getContactActivities = (req, res) => {
+  try {
+    const { contact_id } = req.params;
+    const {
+      page = 1,
+      limit = 20
+    } = req.query;
+    
+    const contactId = parseInt(contact_id);
+    const pageNum = parseInt(page);
+    const limitNum = parseInt(limit);
+    
+    if (pageNum < 1 || limitNum < 1) {
+      return res.status(400).json({
+        error: true,
+        code: 400,
+        message: 'Invalid pagination parameters'
+      });
+    }
+    
+    // Find contact
+    const contact = contacts.find(c => c.id === contactId);
+    
+    if (!contact) {
+      return res.status(404).json({
+        error: true,
+        code: 404,
+        message: 'Contact not found'
+      });
+    }
+    
+    // Mock activities data for contact 45
+    let activities = [];
+    
+    if (contactId === 45) {
+      activities = [
+        {
+          type: "call",
+          id: 10,
+          title: "Follow-up call",
+          description: "Discuss pricing",
+          duration: 20,
+          handled_by_name: "Panjul",
+          status: "connected",
+          created_at: "2026-02-12T10:00:00Z"
+        },
+        {
+          type: "email",
+          id: 22,
+          title: "Proposal sent",
+          description: "Sending proposal document",
+          to: "client@company.com",
+          created_by_name: "Panjul",
+          status: "sent",
+          attachment_file_url: "https://cdn.example.com/files/proposal.pdf",
+          created_at: "2026-02-11T09:30:00Z"
+        },
+        {
+          type: "meeting",
+          id: 5,
+          title: "Kickoff Meeting",
+          description: "Initial discussion",
+          schedule_date: "2026-02-15",
+          schedule_time: "10:00 - 11:00",
+          guest: ["Budi Santoso", "Siti Rahma"],
+          attachment_file_url: null,
+          created_by_name: "Panjul",
+          status: "upcoming",
+          created_at: "2026-02-10T10:15:30Z"
+        },
+        {
+          type: "task",
+          id: 3,
+          title: "Send proposal",
+          description: "Prepare and send proposal",
+          due_date: "2026-02-12",
+          created_at: "2026-02-10T10:15:30Z",
+          status: "upcoming",
+          priority: "high",
+          assigned_to_name: "Panjul"
+        },
+        {
+          type: "attachment",
+          id: 7,
+          title: "Signed contract",
+          description: "Final signed agreement",
+          attachment_file_url: [
+            "https://cdn.example.com/files/contract_signed.pdf"
+          ],
+          created_by_name: "Budi Santoso",
+          created_at: "2026-02-09T08:45:00Z"
+        }
+      ];
+    } else {
+      // Generate dynamic activities for other contacts
+      activities = generateMockActivities(contactId);
+    }
+    
+    // Sort activities by created_at (newest first)
+    activities.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    
+    // Paginate
+    const startIndex = (pageNum - 1) * limitNum;
+    const endIndex = pageNum * limitNum;
+    const paginatedActivities = activities.slice(startIndex, endIndex);
+    
+    const pagination = {
+      page: pageNum,
+      limit: limitNum,
+      total: activities.length,
+      totalPages: Math.ceil(activities.length / limitNum),
+      hasNext: endIndex < activities.length,
+      hasPrev: startIndex > 0
+    };
+    
+    res.status(200).json({
+      error: false,
+      code: 200,
+      message: 'Success',
+      data: {
+        items: paginatedActivities,
+        pagination
+      }
+    });
+    
+  } catch (error) {
+    console.error('Error getting contact activities:', error);
+    res.status(500).json({
+      error: true,
+      code: 500,
+      message: 'Internal server error'
+    });
+  }
+};
+
+// Helper function to generate mock activities for testing
+function generateMockActivities(contactId) {
+  const activityTypes = ['call', 'email', 'meeting', 'task', 'attachment'];
+  const statuses = {
+    call: ['connected', 'missed', 'voicemail', 'scheduled'],
+    email: ['sent', 'opened', 'clicked', 'bounced'],
+    meeting: ['upcoming', 'completed', 'cancelled', 'rescheduled'],
+    task: ['upcoming', 'in_progress', 'completed', 'overdue'],
+    attachment: ['uploaded', 'viewed', 'downloaded']
+  };
+  
+  const titles = {
+    call: ['Intro call', 'Follow-up call', 'Discovery call', 'Demo call'],
+    email: ['Proposal', 'Follow-up email', 'Meeting notes', 'Contract'],
+    meeting: ['Kickoff', 'Review', 'Workshop', 'Presentation'],
+    task: ['Send document', 'Update CRM', 'Schedule meeting', 'Research'],
+    attachment: ['Contract', 'Proposal', 'NDA', 'Invoice']
+  };
+  
+  const activities = [];
+  const now = new Date();
+  
+  // Generate 5-15 random activities
+  const numActivities = Math.floor(Math.random() * 10) + 5;
+  
+  for (let i = 1; i <= numActivities; i++) {
+    const type = activityTypes[Math.floor(Math.random() * activityTypes.length)];
+    const statusArray = statuses[type];
+    const status = statusArray[Math.floor(Math.random() * statusArray.length)];
+    const titleArray = titles[type];
+    const title = titleArray[Math.floor(Math.random() * titleArray.length)];
+    
+    // Random date within last 30 days
+    const date = new Date(now);
+    date.setDate(date.getDate() - Math.floor(Math.random() * 30));
+    
+    const activity = {
+      type,
+      id: i + (contactId * 100),
+      title: `${title} - Contact ${contactId}`,
+      description: `Sample ${type} description for contact ${contactId}`,
+      created_at: date.toISOString(),
+      created_by_name: ['Panjul', 'Budi Santoso', 'Siti Rahma'][Math.floor(Math.random() * 3)],
+      status
+    };
+    
+    // Add type-specific fields
+    switch(type) {
+      case 'call':
+        activity.duration = Math.floor(Math.random() * 30) + 5;
+        activity.handled_by_name = activity.created_by_name;
+        break;
+      case 'email':
+        activity.to = `client${Math.floor(Math.random() * 10)}@company.com`;
+        if (Math.random() > 0.5) {
+          activity.attachment_file_url = `https://cdn.example.com/files/doc${i}.pdf`;
+        }
+        break;
+      case 'meeting':
+        const meetingDate = new Date(date);
+        meetingDate.setDate(meetingDate.getDate() + Math.floor(Math.random() * 10));
+        activity.schedule_date = meetingDate.toISOString().split('T')[0];
+        activity.schedule_time = `${Math.floor(Math.random() * 8) + 9}:00 - ${Math.floor(Math.random() * 8) + 10}:00`;
+        activity.guest = ['Budi Santoso', 'Siti Rahma', 'Panjul'].slice(0, Math.floor(Math.random() * 3) + 1);
+        break;
+      case 'task':
+        const dueDate = new Date(date);
+        dueDate.setDate(dueDate.getDate() + Math.floor(Math.random() * 7));
+        activity.due_date = dueDate.toISOString().split('T')[0];
+        activity.priority = ['low', 'medium', 'high'][Math.floor(Math.random() * 3)];
+        activity.assigned_to_name = activity.created_by_name;
+        break;
+      case 'attachment':
+        activity.attachment_file_url = [
+          `https://cdn.example.com/files/doc${i}.pdf`
+        ];
+        break;
+    }
+    
+    activities.push(activity);
+  }
+  
+  return activities;
+}

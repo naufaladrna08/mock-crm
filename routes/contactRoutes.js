@@ -23,4 +23,21 @@ router.put('/:contact_id', contactController.updateContact);
 // Delete contact
 router.delete('/:contact_id', contactController.deleteContact);
 
+router.get('/:contact_id/call', contactController.getContactCalls);
+
+// Get contact emails
+router.get('/:contact_id/email', contactController.getContactEmails);
+
+// Get contact meetings
+router.get('/:contact_id/meeting', contactController.getContactMeetings);
+
+// Get contact tasks
+router.get('/:contact_id/task', contactController.getContactTasks);
+
+// Get contact activities
+router.get('/:contact_id/activity', contactController.getContactActivities);
+
+// Get contact timeline
+router.get('/:contact_id/timeline', contactController.getContactTimeline);
+
 module.exports = router;
