@@ -1665,3 +1665,35 @@ function generateMockActivities(contactId) {
   
   return activities;
 }
+
+exports.getContactTaskById = (req, res) => {
+  try {
+    const task = {
+      task_id: 1,
+      title: "Send proposal",
+      notes: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod",
+      due_date: "2026-02-12",
+      created_at: "2026-02-10T10:15:30Z",
+      status: "upcoming",
+      priority: "high",
+      assigned_to_name: "Panjul",
+      assigned_to_user_id: 1,
+      attachment_file_url: "https://cdn.example.com/files/proposal.pdf"
+    };
+    
+    res.status(200).json({
+      error: false,
+      code: 200,
+      message: 'Success',
+      data: task
+    });
+    
+  } catch (error) {
+    console.error('Error getting contact task:', error);
+    res.status(500).json({
+      error: true,
+      code: 500,
+      message: 'Internal server error'
+    });
+  }
+}
