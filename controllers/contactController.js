@@ -23,6 +23,8 @@ const initializeMockData = () => {
       converted_at: null,
       created_at: '2026-02-10T10:15:30Z',
       updated_at: '2026-02-10T10:15:30Z',
+      account_id: 3,
+      account_name: 'PT Teknologi Nusantara',
       professional_info: {
         "account": {
           "id": 3,
@@ -263,7 +265,9 @@ exports.listContacts = (req, res) => {
       id: contact.id,
       name: `${contact.first_name} ${contact.last_name || ''}`.trim(),
       email: contact.email,
+      account_id: contact.professional_info?.account?.id || null,
       account_name: contact.professional_info?.account?.name || 'No Account',
+      owner_id: contact.owner?.id || null,
       owner_name: contact.owner?.name || 'Unknown Owner',
       last_activite: contact.updated_at || contact.created_at
     }));
@@ -275,7 +279,9 @@ exports.listContacts = (req, res) => {
           id: 45,
           name: 'Andi Pratama',
           email: 'andi.pratama@gmail.com',
+          account_id: 3,
           account_name: 'PT Teknologi Nusantara',
+          owner_id: 1,
           owner_name: 'Budi Santoso',
           last_activite: '2026-02-08T14:21:00Z'
         },
@@ -283,7 +289,9 @@ exports.listContacts = (req, res) => {
           id: 46,
           name: 'Siti Aisyah',
           email: 'siti.aisyah@gmail.com',
+          account_id: 4,
           account_name: 'CV Digital Solusi',
+          owner_id: 1,
           owner_name: 'Budi Santoso',
           last_activite: '2026-02-07T09:10:32Z'
         }
