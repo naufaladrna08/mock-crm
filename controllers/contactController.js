@@ -1299,7 +1299,21 @@ exports.getContactTasks = (req, res) => {
           created_at: "2026-02-10T10:15:30Z",
           status: "upcoming",
           priority: "high",
-          assigned_to_name: "Panjul"
+          assigned_to_name: "Panjul",
+          attachment_file_url: ["https://cdn.example.com/files/proposal-draft.pdf"],
+          sub_task: [
+            {
+              id: 1,
+              title: "Review proposal",
+              description: "Review the proposal document before sending",
+              due_date: "2026-02-11",
+              created_at: "2026-02-10T12:00:00Z",
+              status: "in_progress",
+              priority: "medium",
+              assigned_to_name: "Budi Santoso",
+              attachment_file_url: null
+            }
+          ]
         },
         {
           id: 2,
@@ -1309,7 +1323,21 @@ exports.getContactTasks = (req, res) => {
           created_at: "2026-02-10T10:15:30Z",
           status: "done",
           priority: "high",
-          assigned_to_name: "Panjul"
+          assigned_to_name: "Panjul",
+          attachment_file_url: ["https://cdn.example.com/files/proposal-draft.pdf"],
+          sub_task: [
+            {
+              id: 1,
+              title: "Finalize proposal",
+              description: "Finalize the proposal document",
+              due_date: "2026-02-11",
+              created_at: "2026-02-10T14:00:00Z",
+              status: "done",
+              priority: "high",
+              assigned_to_name: "Siti Rahma",
+              attachment_file_url: null
+            }
+          ]
         },
         {
           id: 3,
@@ -1319,7 +1347,21 @@ exports.getContactTasks = (req, res) => {
           created_at: "2026-02-10T10:15:30Z",
           status: "overdue",
           priority: "medium",
-          assigned_to_name: "Panjul"
+          assigned_to_name: "Panjul", 
+          attachment_file_url: null,
+          sub_task: [
+            {
+              id: 1,
+              title: "Prepare materials",
+              description: "Prepare supporting materials",
+              due_date: "2026-02-11",
+              created_at: "2026-02-10T12:00:00Z",
+              status: "overdue",
+              priority: "medium",
+              assigned_to_name: "Eka Prasetya",
+              attachment_file_url: null
+            }
+          ]
         },
         {
           id: 4,
@@ -1329,7 +1371,21 @@ exports.getContactTasks = (req, res) => {
           created_at: "2026-02-10T10:15:30Z",
           status: "in_progress",
           priority: "low",
-          assigned_to_name: "Panjul"
+          assigned_to_name: "Panjul",
+          attachment_file_url: null,
+          sub_task: [
+            {
+              id: 1,
+              title: "Design layout",
+              description: "Design the proposal layout",
+              due_date: "2026-02-12",
+              created_at: "2026-02-10T13:30:00Z",
+              status: "in_progress",
+              priority: "low",
+              assigned_to_name: "Panjul",
+              attachment_file_url: null
+            }
+          ]
         }
       ];
     } else {
@@ -1396,6 +1452,17 @@ function generateMockTasks(contactId) {
     'Research client'
   ];
   
+  const subTaskTitles = [
+    'Review document',
+    'Prepare materials',
+    'Collect feedback',
+    'Design layout',
+    'Send reminder',
+    'Update information',
+    'Verify details',
+    'Schedule time'
+  ];
+  
   const tasks = [];
   const now = new Date();
   
@@ -1411,6 +1478,30 @@ function generateMockTasks(contactId) {
     const createdDate = new Date(now);
     createdDate.setDate(createdDate.getDate() - Math.floor(Math.random() * 30));
     
+    // Generate 0-3 subtasks
+    const numSubTasks = Math.floor(Math.random() * 4);
+    const subTasks = [];
+    
+    for (let j = 1; j <= numSubTasks; j++) {
+      const subTaskDueDate = new Date(dueDate);
+      subTaskDueDate.setDate(subTaskDueDate.getDate() - Math.floor(Math.random() * 3));
+      
+      const subTaskCreatedDate = new Date(createdDate);
+      subTaskCreatedDate.setDate(subTaskCreatedDate.getDate() + Math.floor(Math.random() * 2));
+      
+      subTasks.push({
+        id: j,
+        title: subTaskTitles[Math.floor(Math.random() * subTaskTitles.length)],
+        description: `Subtask for ${taskTitles[Math.floor(Math.random() * taskTitles.length)]} - Contact ${contactId}`,
+        due_date: subTaskDueDate.toISOString().split('T')[0],
+        created_at: subTaskCreatedDate.toISOString(),
+        status: statuses[Math.floor(Math.random() * statuses.length)],
+        priority: priorities[Math.floor(Math.random() * priorities.length)],
+        assigned_to_name: ['Panjul', 'Budi Santoso', 'Siti Rahma', 'Eka Prasetya'][Math.floor(Math.random() * 4)],
+        attachment_file_url: null
+      });
+    }
+    
     const task = {
       id: i + (contactId * 100),
       title: taskTitles[Math.floor(Math.random() * taskTitles.length)],
@@ -1419,7 +1510,9 @@ function generateMockTasks(contactId) {
       created_at: createdDate.toISOString(),
       status: statuses[Math.floor(Math.random() * statuses.length)],
       priority: priorities[Math.floor(Math.random() * priorities.length)],
-      assigned_to_name: ['Panjul', 'Budi Santoso', 'Siti Rahma'][Math.floor(Math.random() * 3)]
+      assigned_to_name: ['Panjul', 'Budi Santoso', 'Siti Rahma'][Math.floor(Math.random() * 3)],
+      attachment_file_url: [`https://cdn.example.com/files/task-${i}.pdf`],
+      sub_task: subTasks
     };
     
     tasks.push(task);
