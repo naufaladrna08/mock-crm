@@ -24,9 +24,11 @@ const initializeMockData = () => {
       created_at: '2026-02-10T10:15:30Z',
       updated_at: '2026-02-10T10:15:30Z',
       professional_info: {
-        account: {
-          id: 3,
-          name: 'PT Teknologi Nusantara'
+        "account": {
+          "id": 3,
+          "name": "PT Teknologi Nusantara",
+          "phone_number": "+6282224360000",
+          "website": "steradian.co.id"
         },
         job_title: 'Software Engineer',
         email: 'andi@company.com',
@@ -60,7 +62,21 @@ const initializeMockData = () => {
         address: 'Jl. Sudirman No. 123, Jakarta',
         zip_code: '10220',
         description: 'Primary residence'
-      }]
+      }],
+      opportunities: [
+        {
+          "id": 1,
+          "status": "open",
+          "value_amount": "Rp 75.000.000",
+          "closing_date": "2026-03-12"
+        },
+        {
+          "id": 2,
+          "status": "won",
+          "value_amount": "Rp 75.000.000",
+          "closing_date": "2026-03-12"
+        }
+      ]
     });
   }
 
@@ -373,7 +389,8 @@ exports.getContactDetail = (req, res) => {
       personal_details: contact.personal_details || {},
       assistants: contact.assistants?.[0] || {}, // Take first assistant
       social_medias: contact.social_medias || {},
-      addresses: contact.addresses?.[0] || {} // Take first address
+      addresses: contact.addresses?.[0] || {}, // Take first address
+      opportunities: contact.opportunities || [] 
     };
     
     res.status(200).json({
@@ -1740,4 +1757,36 @@ function generateMockActivities(contactId) {
   }
   
   return activities;
+}
+
+exports.getContactTaskById = (req, res) => {
+  try {
+    const task = {
+      task_id: 1,
+      title: "Send proposal",
+      notes: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod",
+      due_date: "2026-02-12",
+      created_at: "2026-02-10T10:15:30Z",
+      status: "upcoming",
+      priority: "high",
+      assigned_to_name: "Panjul",
+      assigned_to_user_id: 1,
+      attachment_file_url: "https://cdn.example.com/files/proposal.pdf"
+    };
+    
+    res.status(200).json({
+      error: false,
+      code: 200,
+      message: 'Success',
+      data: task
+    });
+    
+  } catch (error) {
+    console.error('Error getting contact task:', error);
+    res.status(500).json({
+      error: true,
+      code: 500,
+      message: 'Internal server error'
+    });
+  }
 }

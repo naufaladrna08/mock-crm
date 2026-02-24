@@ -40,4 +40,7 @@ router.get('/:contact_id/activity', contactController.getContactActivities);
 // Get contact timeline
 router.get('/:contact_id/timeline', contactController.getContactTimeline);
 
+// Get contact task
+router.get('/:contact_id/task/:task_id', contactController.getContactTaskById);
+
 module.exports = router;
