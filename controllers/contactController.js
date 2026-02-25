@@ -1285,7 +1285,8 @@ exports.getContactTasks = (req, res) => {
     const { contact_id } = req.params;
     const {
       page = 1,
-      limit = 20
+      limit = 20,
+      status
     } = req.query;
     
     const contactId = parseInt(contact_id);
@@ -1314,6 +1315,20 @@ exports.getContactTasks = (req, res) => {
     // Mock tasks data for contact 45
     let tasks = [];
     tasks = generateMockTasks(contactId);
+
+    // Filter by status (supports comma-separated values)
+    if (status) {
+      const statusFilters = status
+        .split(',')
+        .map(value => value.trim().toLowerCase())
+        .filter(Boolean);
+
+      if (statusFilters.length > 0) {
+        tasks = tasks.filter(task =>
+          task.status && statusFilters.includes(task.status.toLowerCase())
+        );
+      }
+    }
     
     // Sort tasks by due_date (closest first) or created_at
     tasks.sort((a, b) => {
