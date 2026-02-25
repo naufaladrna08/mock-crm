@@ -1313,110 +1313,7 @@ exports.getContactTasks = (req, res) => {
     
     // Mock tasks data for contact 45
     let tasks = [];
-    
-    if (contactId === 45) {
-      tasks = [
-        {
-          id: 1,
-          title: "Send proposal",
-          description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod",
-          due_date: "2026-02-12",
-          created_at: "2026-02-10T10:15:30Z",
-          status: "upcoming",
-          priority: "high",
-          assigned_to_name: "Panjul",
-          attachment_file_url: ["https://cdn.example.com/files/proposal-draft.pdf"],
-          sub_task: [
-            {
-              id: 1,
-              title: "Review proposal",
-              description: "Review the proposal document before sending",
-              due_date: "2026-02-11",
-              created_at: "2026-02-10T12:00:00Z",
-              status: "in_progress",
-              priority: "medium",
-              assigned_to_name: "Budi Santoso",
-              attachment_file_url: null
-            }
-          ]
-        },
-        {
-          id: 2,
-          title: "Send proposal2",
-          description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod",
-          due_date: "2026-02-12",
-          created_at: "2026-02-10T10:15:30Z",
-          status: "done",
-          priority: "high",
-          assigned_to_name: "Panjul",
-          attachment_file_url: ["https://cdn.example.com/files/proposal-draft.pdf"],
-          sub_task: [
-            {
-              id: 1,
-              title: "Finalize proposal",
-              description: "Finalize the proposal document",
-              due_date: "2026-02-11",
-              created_at: "2026-02-10T14:00:00Z",
-              status: "done",
-              priority: "high",
-              assigned_to_name: "Siti Rahma",
-              attachment_file_url: null
-            }
-          ]
-        },
-        {
-          id: 3,
-          title: "Send proposal3",
-          description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod",
-          due_date: "2026-02-12",
-          created_at: "2026-02-10T10:15:30Z",
-          status: "overdue",
-          priority: "medium",
-          assigned_to_name: "Panjul", 
-          attachment_file_url: null,
-          sub_task: [
-            {
-              id: 1,
-              title: "Prepare materials",
-              description: "Prepare supporting materials",
-              due_date: "2026-02-11",
-              created_at: "2026-02-10T12:00:00Z",
-              status: "overdue",
-              priority: "medium",
-              assigned_to_name: "Eka Prasetya",
-              attachment_file_url: null
-            }
-          ]
-        },
-        {
-          id: 4,
-          title: "Send proposal4",
-          description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod",
-          due_date: "2026-02-12",
-          created_at: "2026-02-10T10:15:30Z",
-          status: "in_progress",
-          priority: "low",
-          assigned_to_name: "Panjul",
-          attachment_file_url: null,
-          sub_task: [
-            {
-              id: 1,
-              title: "Design layout",
-              description: "Design the proposal layout",
-              due_date: "2026-02-12",
-              created_at: "2026-02-10T13:30:00Z",
-              status: "in_progress",
-              priority: "low",
-              assigned_to_name: "Panjul",
-              attachment_file_url: null
-            }
-          ]
-        }
-      ];
-    } else {
-      // Generate dynamic tasks for other contacts
-      tasks = generateMockTasks(contactId);
-    }
+    tasks = generateMockTasks(contactId);
     
     // Sort tasks by due_date (closest first) or created_at
     tasks.sort((a, b) => {
@@ -1517,7 +1414,7 @@ function generateMockTasks(contactId) {
       subTasks.push({
         id: j,
         title: subTaskTitles[Math.floor(Math.random() * subTaskTitles.length)],
-        description: `Subtask for ${taskTitles[Math.floor(Math.random() * taskTitles.length)]} - Contact ${contactId}`,
+        notes: `Subtask for ${taskTitles[Math.floor(Math.random() * taskTitles.length)]} - Contact ${contactId}`,
         due_date: subTaskDueDate.toISOString().split('T')[0],
         created_at: subTaskCreatedDate.toISOString(),
         status: statuses[Math.floor(Math.random() * statuses.length)],
@@ -1530,7 +1427,7 @@ function generateMockTasks(contactId) {
     const task = {
       id: i + (contactId * 100),
       title: taskTitles[Math.floor(Math.random() * taskTitles.length)],
-      description: `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.`,
+      notes: `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.`,
       due_date: dueDate.toISOString().split('T')[0],
       created_at: createdDate.toISOString(),
       status: statuses[Math.floor(Math.random() * statuses.length)],
