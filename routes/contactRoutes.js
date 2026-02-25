@@ -32,7 +32,7 @@ router.get('/:contact_id/email', contactController.getContactEmails);
 router.get('/:contact_id/meeting', contactController.getContactMeetings);
 
 // Get contact tasks
-router.get('/:contact_id/task', contactController.getContactTasks);
+router.get('/:contact_id/tasks', contactController.getContactTasks);
 
 // Get contact activities
 router.get('/:contact_id/activity', contactController.getContactActivities);
