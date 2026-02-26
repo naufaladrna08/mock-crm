@@ -3,6 +3,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 const contactRoutes = require('./routes/contactRoutes');
 const leadRoutes = require('./routes/leadRoutes');
+const opportunityRoutes = require('./routes/opportunityRoutes');
 const errorHandler = require('./middleware/errorHandler');
 
 const app = express();
@@ -15,8 +16,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Routes
-app.use('/api/contact', contactRoutes);
+app.use('/api/contacts', contactRoutes);
 app.use('/api/lead', leadRoutes);
+app.use('/api/v1/opportunities', opportunityRoutes);
 
 // Health check endpoint
 app.get('/health', (req, res) => {
