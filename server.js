@@ -20,6 +20,27 @@ app.use('/api/contacts', contactRoutes);
 app.use('/api/lead', leadRoutes);
 app.use('/api/v1/opportunities', opportunityRoutes);
 
+app.post("/api/v1/attachment/create", (req, res) => {
+  // Validate request body
+  const { entityId, entityType, title, note, relatedTo, relatedToID, action, relatedRecord } = req.body;
+  
+  if (!entityId || !entityType || !title || !relatedTo || !relatedToID || !action) {
+    return res.status(400).json({
+      success: false,
+      message: "Missing required fields",
+      timestamp: new Date().toISOString()
+    });
+  }
+
+  res.status(201).json({
+    success: true,
+    data: null,
+    message: "Attachment created successfully",
+    timestamp: new Date().toISOString()
+  });
+});
+
+
 // Health check endpoint
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'OK', timestamp: new Date().toISOString() });
